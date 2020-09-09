@@ -5,12 +5,14 @@ import time
 def check_result(profile):
     result = subprocess.run(f"netsh wlan connect name={profile}", shell=True, stdout=subprocess.PIPE)
     result = result.stdout.decode('cp866', 'ignore')
+    time.sleep(10)
     return result
 
 
 def check_ping():
     ping = subprocess.run("ping 2miners.com", shell=True, stdout=subprocess.PIPE)
     ping = ping.stdout.decode('cp866', 'ignore')
+    time.sleep(10)
     return ping
 
 
@@ -35,6 +37,7 @@ while True:
     if 'Обмен пакетами' in ping:
         print(f'Connected to {ssid}, next sleep')
         time.sleep(60)
+        print(ping)
     else:
         for profile in profile_list:
             result = check_result(profile)
