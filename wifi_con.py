@@ -27,6 +27,8 @@ with open('wifi_list.txt', 'w+', encoding='utf-8') as file:
             start = line.find(':') + 2
             profile_list.append(line[start:].strip())
 
+connected_ssid = ''
+
 while True:
     ping = check_ping()
     interface = subprocess.run("netsh wlan show interface", shell=True, stdout=subprocess.PIPE)
@@ -35,9 +37,11 @@ while True:
     end = interface.find('\n', start)
     ssid = interface[start: end].strip()
     if 'Обмен пакетами' in ping:
-        print(f'Connected to {ssid}, next sleep')
-        time.sleep(60)
-        print(ping)
+        if not ssid == connected_ssid:
+            print(f'Connected to {ssid}')
+            connected_ssid = ssid
+        else:
+            time.sleep(15)
     else:
         for profile in profile_list:
             result = check_result(profile)
