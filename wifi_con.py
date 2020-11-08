@@ -16,6 +16,11 @@ def check_ping():
     return ping
 
 
+def time_print(string):
+    print(time.strftime('%X', time.localtime()), end=' ')
+    print(string)
+
+
 profile = subprocess.run("netsh wlan show profile", shell=True, stdout=subprocess.PIPE)
 profile = profile.stdout.decode('cp866', 'ignore')
 profile_list = []
@@ -37,8 +42,9 @@ while True:
     end = interface.find('\n', start)
     ssid = interface[start: end].strip()
     if 'Обмен пакетами' in ping:
+
         if not ssid == connected_ssid:
-            print(f'Connected to {ssid}')
+            time_print(f'Connected to {ssid}')
             connected_ssid = ssid
         else:
             time.sleep(15)
@@ -46,9 +52,9 @@ while True:
         for profile in profile_list:
             result = check_result(profile)
             new_ping = check_ping()
-            print(f'Подключение к {profile} : {result[:-2]}')
+            time_print(f'Подключение к {profile} : {result[:-2]}')
             if 'Обмен пакетами' in new_ping:
-                print(f'Доступ к сети {profile} : YES')
+                time_print(f'Доступ к сети {profile} : YES')
                 break
             else:
-                print(f'Доступ к сети {profile} : NO')
+                time_print(f'Доступ к сети {profile} : NO')
