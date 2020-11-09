@@ -5,14 +5,14 @@ import time
 def check_result(profile):
     result = subprocess.run(f"netsh wlan connect name={profile}", shell=True, stdout=subprocess.PIPE)
     result = result.stdout.decode('cp866', 'ignore')
-    time.sleep(10)
+    time.sleep(5)
     return result
 
 
 def check_ping():
     ping = subprocess.run("ping 2miners.com", shell=True, stdout=subprocess.PIPE)
     ping = ping.stdout.decode('cp866', 'ignore')
-    time.sleep(10)
+    time.sleep(5)
     return ping
 
 
@@ -24,15 +24,13 @@ def time_print(string):
 profile = subprocess.run("netsh wlan show profile", shell=True, stdout=subprocess.PIPE)
 profile = profile.stdout.decode('cp866', 'ignore')
 profile_list = []
-with open('wifi_list.txt', 'w+', encoding='utf-8') as file:
-    file.write(profile)
-    file.seek(0)
-    for line in file.readlines():
-        if 'Все профили пользователей' in line:
-            start = line.find(':') + 2
-            profile_list.append(line[start:].strip())
-
+e_before = ''
+for e in profile.split():
+    if e_before == ':':
+        profile_list.append(e)
+    e_before = e
 connected_ssid = ''
+
 
 while True:
     ping = check_ping()
